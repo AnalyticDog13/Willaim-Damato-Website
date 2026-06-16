@@ -86,7 +86,6 @@ const process = [
 
 const stats = [
   { v: '40+', l: 'Sites shipped' },
-  { v: '6 yrs', l: 'Independent' },
   { v: '<1.5s', l: 'Median load' },
   { v: '1', l: 'Designer who builds' },
 ]

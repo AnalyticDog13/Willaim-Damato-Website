@@ -402,7 +402,7 @@
 /* ---------- STATS + CTA BAND ---------- */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   padding-bottom: clamp(56px, 8vw, 100px);
   margin-bottom: clamp(56px, 8vw, 100px);
