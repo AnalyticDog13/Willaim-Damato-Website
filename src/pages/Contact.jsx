@@ -5,6 +5,10 @@ import './Contact.css'
 
 const EMAIL = 'will@williamdamato.com'
 
+// Web3Forms access key — pulled from .env (VITE_WEB3FORMS_KEY).
+// Delivers submissions to the inbox tied to the key (will@williamdamato.com).
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY
+
 const projectTypes = [
   'New website',
   'Redesign',
@@ -23,39 +27,65 @@ export default function Contact() {
     type: projectTypes[0],
     budget: budgets[1],
     message: '',
+    botcheck: '', // honeypot — humans never see or fill this
   })
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState(null)
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Bot filled the hidden field — pretend success, send nothing.
+    if (form.botcheck) {
+      setSent(true)
+      return
+    }
+
+    setError(null)
+    setSending(true)
 
     const subject = `New project enquiry — ${form.name || 'Website'}${
       form.company ? ` (${form.company})` : ''
     }`
 
-    const body = [
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      form.company ? `Company: ${form.company}` : null,
-      `Project type: ${form.type}`,
-      `Budget: ${form.budget}`,
-      '',
-      'Project details:',
-      form.message,
-      '',
-      '— Sent from williamdamato.com',
-    ]
-      .filter((l) => l !== null)
-      .join('\n')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject,
+          from_name: 'williamdamato.com',
+          // Web3Forms uses the `email` field as the Reply-To, so a reply
+          // goes straight back to the visitor.
+          name: form.name,
+          email: form.email,
+          company: form.company || '—',
+          'Project type': form.type,
+          Budget: form.budget,
+          message: form.message,
+        }),
+      })
 
-    const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`
-
-    window.location.href = mailto
-    setSent(true)
+      const data = await res.json()
+      if (data.success) {
+        setSent(true)
+      } else {
+        throw new Error(data.message || 'Submission failed')
+      }
+    } catch (err) {
+      setError(
+        "Something went wrong sending your message. Please try again, or email us directly."
+      )
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -109,18 +139,35 @@ export default function Contact() {
           {sent ? (
             <div className="contact__success" role="status">
               <div className="contact__success-mark" aria-hidden="true">✓</div>
-              <h2>Your email is ready to send.</h2>
+              <h2>Thanks — your message is on its way.</h2>
               <p>
-                We&rsquo;ve opened your mail app with the details filled in — just
-                hit send. If nothing opened, email us directly at{' '}
+                It&rsquo;s landed in Will&rsquo;s inbox and you&rsquo;ll hear back
+                within two business days. Prefer email? Reach us anytime at{' '}
                 <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
               </p>
               <button className="btn btn--ghost" onClick={() => setSent(false)}>
-                Edit the message
+                Send another
               </button>
             </div>
           ) : (
             <form className="form" onSubmit={handleSubmit} noValidate>
+              {/* Honeypot — visually hidden, off the tab order. Bots fill it; people don't. */}
+              <input
+                type="text"
+                name="botcheck"
+                value={form.botcheck}
+                onChange={update('botcheck')}
+                tabIndex="-1"
+                autoComplete="off"
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  left: '-9999px',
+                  width: '1px',
+                  height: '1px',
+                  opacity: 0,
+                }}
+              />
               <div className="form__row">
                 <label className="field">
                   <span className="field__label">Name</span>
@@ -195,11 +242,23 @@ export default function Contact() {
                 />
               </label>
 
-              <button type="submit" className="btn btn--accent form__submit">
-                Send enquiry <span className="btn__arrow" aria-hidden="true">→</span>
+              {error && (
+                <p className="form__error" role="alert">
+                  {error}{' '}
+                  <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn--accent form__submit"
+                disabled={sending}
+              >
+                {sending ? 'Sending…' : 'Send enquiry'}{' '}
+                {!sending && <span className="btn__arrow" aria-hidden="true">→</span>}
               </button>
               <p className="form__fine">
-                Submitting opens your email app addressed to {EMAIL}.
+                Your message goes straight to {EMAIL}. We reply within two business days.
               </p>
             </form>
           )}
