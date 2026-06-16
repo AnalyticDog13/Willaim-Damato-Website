@@ -13,7 +13,7 @@ const projectTypes = [
   'Something else',
 ]
 
-const budgets = ['Under $5k', '$5k – $15k', '$15k – $40k', '$40k+', 'Not sure yet']
+const budgets = ['Under $500', '$500 – $1,000', '$1,000 – $2,000', '$2,000+', 'Not sure yet']
 
 export default function Contact() {
   const [form, setForm] = useState({

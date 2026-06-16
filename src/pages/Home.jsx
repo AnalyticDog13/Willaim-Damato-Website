@@ -80,7 +80,7 @@ const process = [
   {
     n: '04',
     title: 'Launch',
-    body: 'We ship, measure, and refine. You leave with a site — and the means to keep it sharp.',
+    body: 'We ship, measure, and refine. Most projects go from kickoff to a finished, live site in about a week — and you leave with the means to keep it sharp.',
   },
 ]
 
@@ -304,6 +304,11 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+
+          <Reveal as="p" className="stats__note">
+            Most clients have a finished website live in about a week on average —
+            considered work, shipped quickly.
+          </Reveal>
 
           <Reveal className="cta-band__panel">
             <h2 className="cta-band__title">

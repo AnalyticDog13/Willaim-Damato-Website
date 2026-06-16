@@ -431,6 +431,14 @@
   color: var(--muted);
 }
 
+.stats__note {
+  margin-bottom: clamp(48px, 7vw, 88px);
+  max-width: 48ch;
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.55;
+}
+
 .cta-band__panel {
   background: var(--lilac);
   border-radius: calc(var(--radius) + 8px);
@@ -484,8 +492,14 @@
      of the viewport and stops colliding with the action buttons */
   .hero {
     justify-content: flex-start;
-    padding-top: 128px;
+    padding-top: 104px;
     padding-bottom: 96px;
+  }
+
+  /* Lift the eyebrow and open up the gap so it stops crowding the
+     headline's first line on narrow screens */
+  .hero__eyebrow {
+    margin-bottom: 48px;
   }
 
   .hero__scroll {
