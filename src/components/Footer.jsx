@@ -28,7 +28,7 @@ export default function Footer() {
           </div>
           <div className="footer__col">
             <span className="footer__col-h">Studio</span>
-            <span className="footer__static">Independent · est. 2019</span>
+            <span className="footer__static">Independent · est. 2025</span>
             <span className="footer__static">Remote-first · worldwide</span>
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
           </div>

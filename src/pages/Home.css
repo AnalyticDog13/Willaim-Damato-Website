@@ -480,6 +480,18 @@
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 760px) {
+  /* Anchor hero content to the top so the scroll hint owns the bottom
+     of the viewport and stops colliding with the action buttons */
+  .hero {
+    justify-content: flex-start;
+    padding-top: 128px;
+    padding-bottom: 96px;
+  }
+
+  .hero__scroll {
+    bottom: 20px;
+  }
+
   .services__grid {
     grid-template-columns: 1fr;
   }

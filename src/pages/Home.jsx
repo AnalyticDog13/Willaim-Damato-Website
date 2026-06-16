@@ -141,7 +141,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            Independent web studio · est. 2019
+            Independent web studio · est. 2025
           </motion.p>
 
           <AssemblingHeadline />
